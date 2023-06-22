@@ -1,0 +1,22 @@
+#
+# Sprite sheet data for Unity.
+#
+# To import these sprites into your Unity project, download "TexturePackerImporter":
+# http://www.codeandweb.com/texturepacker/unity
+#
+# $TexturePacker:SmartUpdate:98d86f94dfe9cb7dfd0138b94d4960ea:a5aeb0f65674ddc729b05ed64fda72fc:843632eed0df6523d6ebafe36cc4f356$
+#
+:format=40000
+:texture=bigWinSprite.png
+:size=1152x1916
+
+babasticWinText;1;400;866;336;0.5;0.5
+bigWinBg;1;1206;1149;709;0.5;0.5
+bigWinCheckCB;869;702;34;34;0.5;0.5
+bigWinHolder_noShare;1;738;977;466;0.5;0.5
+bigWinSmallStar;658;101;109;110;0.5;0.5
+bigWinStarLeft;779;98;292;300;0.5;0.5
+bigWinStarRight;869;400;243;248;0.5;0.5
+bigWinText;1;2;655;209;0.5;0.5
+bigWinUnCheckCB;658;65;34;34;0.5;0.5
+megaWinText;1;213;776;185;0.5;0.5
