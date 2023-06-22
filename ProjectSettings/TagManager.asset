@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1684950289
+    locked: 0
+  - name: UI Element
+    uniqueID: 3693971057
+    locked: 0
+  - name: Win Line
+    uniqueID: 218376641
+    locked: 0
+  - name: Slot Symbol
+    uniqueID: 3303871509
+    locked: 0
