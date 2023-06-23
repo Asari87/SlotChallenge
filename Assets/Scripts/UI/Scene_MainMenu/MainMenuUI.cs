@@ -12,7 +12,12 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
-        playButton.onClick.AddListener(() => GameManager.Instance.SceneHandler.LoadScene(1));
+        playButton.onClick.AddListener(
+            () =>
+            {
+                //TODO: Load slot assets here
+                GameManager.Instance.SceneHandler.LoadScene(1);
+            });
         optionsButton.onClick.AddListener(() => GameManager.Instance.ShowSoundOptions());
     }
 
