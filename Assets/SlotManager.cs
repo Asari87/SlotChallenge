@@ -19,6 +19,9 @@ public class SlotManager : MonoBehaviour
     public Action<SlotStatus> OnSlotStatusChanged;
 
     private bool waitingForReels = false;
+
+    public int GetSpinCost() => slotSetting.spinCost;
+
     private void Awake()
     {
         reelDelay = new WaitForSeconds(delayBetweenReels);
@@ -105,7 +108,7 @@ public class SlotManager : MonoBehaviour
                 StopReels();
                 break;
             case SlotStatus.Auto:
-                SpinReels();
+                StopReels();
                 break;
         }
     }

@@ -31,13 +31,27 @@ public class SlotPlayerController : MonoBehaviour
         {
             if(status == SlotStatus.Idle)
             {
-                slotManager.SpinReels();
+                TrySpinningSlot();
             }
 
             return;
         }
         //else, update the button visual
         spinButton.HandleSlotState(status);
+    }
+
+    private void TrySpinningSlot()
+    {
+        if(playerData.GetCurrentBalance() >= slotManager.GetSpinCost())
+        {
+            playerData.TakeFromBalance(slotManager.GetSpinCost());
+            slotManager.SpinReels();
+        }
+        else
+        {
+            Debug.LogWarning("Not enough money to spin");
+            autoSpinMode = false;
+        }
     }
 
     private void HandleSpinPress(bool longPress)
@@ -48,7 +62,7 @@ public class SlotPlayerController : MonoBehaviour
         if (autoSpinMode)
             spinButton.HandleSlotState(SlotStatus.Auto);
         else
-            slotManager.ToggleState();
+            TrySpinningSlot();
     }
 
 
