@@ -42,7 +42,11 @@ public class PlayerData : ScriptableObject
         OnBalanceChanged?.Invoke(currentBalance);
     }
 
-
+    public void TakeFromBalance(int amount)
+    {
+        currentBalance -= amount;
+        OnBalanceChanged?.Invoke(currentBalance);
+    }
     public void AddToBalance(int amount)
     {
         currentBalance += amount;

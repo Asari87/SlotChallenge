@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfa41619985dfc14eafb85c4db187807, type: 3}
-  m_Name: New Reel Setting SO
+  m_Script: {fileID: 11500000, guid: d4cddb3bd5a53c7438adc044514c3690, type: 3}
+  m_Name: SymbolSetting
   m_EditorClassIdentifier: 
-  spriteSize: {x: 160, y: 169}
+  symbolTemplate: {fileID: 3340760275242169629, guid: 3cce39778b5bd4346976d5a40aa4942a, type: 3}
   reelSprites:
   - {fileID: 21300000, guid: 2afff9f94679ae4488578576abcdcaf2, type: 3}
   - {fileID: 21300000, guid: 0d95899807277b449b8e721fdffe0d5d, type: 3}

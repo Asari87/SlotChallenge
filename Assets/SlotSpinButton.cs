@@ -10,9 +10,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public enum SpinMode { Spin, Stop, Auto}
 
-public class ButtonLogicHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class SlotSpinButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    private SpinMode currentSpinMode;
+    public SpinMode currentSpinMode;
 
     [Header("Visual Referencess")]
     [SerializeField] private Image buttonBackground;
@@ -35,7 +35,9 @@ public class ButtonLogicHandler : MonoBehaviour, IPointerDownHandler, IPointerUp
     private float timeSincePressed = 0;
     private bool isPressed = false;
 
-    public Action OnSpinPressed;
+
+    public delegate void SpinButtonEvent(bool longPress);
+    public event SpinButtonEvent OnSpinPressed;
     private void Awake()
     {
         timeSincePressed = 0;
@@ -47,6 +49,15 @@ public class ButtonLogicHandler : MonoBehaviour, IPointerDownHandler, IPointerUp
         isPressed = true;
     }
 
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        bool isLongPress = timeSincePressed >= buttonHoldTime;
+        isPressed = false;
+
+        OnSpinPressed?.Invoke(isLongPress);
+    }
+
     private void Update()
     {
         if (isPressed)
@@ -56,40 +67,25 @@ public class ButtonLogicHandler : MonoBehaviour, IPointerDownHandler, IPointerUp
             timeSincePressed = 0;
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void HandleSlotState(SlotStatus status)
     {
-        bool isLongPress = timeSincePressed >= buttonHoldTime;
-        isPressed = false;
-
-        HandleButtonState(currentSpinMode, isLongPress);
-    }
-
-    private void HandleButtonState(SpinMode spinMode, bool isLongPress)
-    {
-        switch (spinMode)
+        switch (status)
         {
-            case SpinMode.Spin:
-                if (isLongPress)
-                    SwitchState(SpinMode.Auto);
-                else
-                    SwitchState(SpinMode.Stop);
-                break;
-            case SpinMode.Stop:
-                if (isLongPress)
-                    SwitchState(SpinMode.Auto);
-                else
-                    SwitchState(SpinMode.Spin);
-                break;
-            case SpinMode.Auto:
+            case SlotStatus.Idle:
                 SwitchState(SpinMode.Spin);
+                break;
+            case SlotStatus.Spinning:
+                SwitchState(SpinMode.Stop);
+                break;
+            case SlotStatus.Auto:
+                SwitchState(SpinMode.Auto);
                 break;
         }
     }
 
     private void SwitchState(SpinMode selectedMode)
     {
-        if (selectedMode == SpinMode.Stop)
-            OnSpinPressed?.Invoke();
+
         currentSpinMode = selectedMode;
         SpinButtonMode relevantMode = buttonModes.Single(m => m.mode == selectedMode);
         mainText.text = relevantMode.buttonText;

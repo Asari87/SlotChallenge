@@ -10,9 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c115e3e321ca4c499a1ec92a24b72f5, type: 3}
-  m_Name: New Slot Setting SO
+  m_Name: SlotSetting
   m_EditorClassIdentifier: 
   spinCost: 1000
-  spinSpeed: 0
-  cyclesBeforeStopping: 0
-  symbolsPerReel: 0
+  symbolsPerReel: 9
