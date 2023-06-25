@@ -56,9 +56,12 @@ public class SlotPlayerController : MonoBehaviour
                 TrySpinningSlot();
                 return;
             }
+            else
+            {
+                //update the button visual
+                spinButton.HandleSlotState(status);
+            }
         }
-        //else, update the button visual
-        spinButton.HandleSlotState(status);
     }
 
     private void CheckResults()

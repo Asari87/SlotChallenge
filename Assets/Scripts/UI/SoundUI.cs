@@ -75,7 +75,8 @@ namespace Game.Core.UI
 
         private void OnEnable()
         {
-            soundToggler =  FindObjectsOfType<MonoBehaviour>().OfType<IToggleSounds>().SingleOrDefault();
+            System.Collections.Generic.IEnumerable<IToggleSounds> soundTogglers = FindObjectsOfType<MonoBehaviour>().OfType<IToggleSounds>();
+            soundToggler = soundTogglers?.SingleOrDefault();
             if (soundToggler == null)
                 throw new System.Exception($"UI could not find the sound manager");
 
