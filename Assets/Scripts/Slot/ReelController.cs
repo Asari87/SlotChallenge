@@ -118,9 +118,11 @@ public class ReelController : MonoBehaviour
             StopCoroutine(spinRoutine);
         }
         spinSequence = shouldSpin;
-        IsSpinning = shouldSpin;
         if (shouldSpin)
+        {
             spinCounter = 0;
+            IsSpinning = true;
+        }
 
 
         startTime = Time.time;
@@ -147,6 +149,8 @@ public class ReelController : MonoBehaviour
 
         if (!shouldSpin)
             CorrectPositions();
+
+        IsSpinning = false;
      }
 
     private void CorrectPositions()
@@ -172,4 +176,24 @@ public class ReelController : MonoBehaviour
             CheckforOutOfBounds();
         }
     }
+
+    public ReelResult GetRowResult(int row)
+    {
+        Transform symbol = transform.GetChild(row);
+        return new ReelResult(symbol.position, int.Parse(symbol.name));
+    }
 }
+
+
+public struct ReelResult
+{
+    public Vector3 spritePosition;
+    public int spriteIndex;
+
+    public ReelResult(Vector3 spritePosition, int spriteIndex)
+    {
+        this.spritePosition = spritePosition;
+        this.spriteIndex = spriteIndex;
+    }
+}
+

@@ -49,6 +49,7 @@ public class PlayerData : ScriptableObject
     }
     public void AddToBalance(int amount)
     {
+        Debug.Log($"Added {amount} to balance");
         currentBalance += amount;
         OnBalanceChanged?.Invoke(currentBalance);
     }

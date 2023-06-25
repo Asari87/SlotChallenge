@@ -41,7 +41,7 @@ public class ReelFactory
             spritePosition.y += index * symbolSettings.symbolTemplate.rectTransform.sizeDelta.y;
             Image reelSymbol = GameObject.Instantiate<Image>(symbolSettings.symbolTemplate, spritePosition, Quaternion.identity, reel.transform);
             reelSymbol.sprite = symbolSettings.reelSprites[indexList[index]];
-            reelSymbol.name = reelSymbol.sprite.name;
+            reelSymbol.name = indexList[index].ToString();
         }
         reel.ResetReel();
         return reel;

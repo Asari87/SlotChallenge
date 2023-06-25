@@ -8,19 +8,27 @@ using UnityEngine;
 public enum SlotStatus { Idle, Spinning, Auto}
 public class SlotManager : MonoBehaviour
 {
-    private SlotSettingSO slotSetting;
+
+    [Header("Reel Settings")]
+    [SerializeField] private bool randomizeSpritesOnReel;
     [SerializeField, Tooltip("Specify where a reel should start")] 
     private Vector2[] reelPositions;
     [SerializeField] private float delayBetweenReels = .2f;
+
+    [Header("Debug")]
+    public bool debugMode;
+    public List<int> resultList;
+
+    private SlotSettingSO slotSetting;
+
     private WaitForSeconds reelDelay;
     private List<ReelController> reels;
 
     private SlotStatus currentStatus;
     public Action<SlotStatus> OnSlotStatusChanged;
-
     private bool waitingForReels = false;
-
     public int GetSpinCost() => slotSetting.spinCost;
+    public int GetPrizePerSymbol() => slotSetting.PrizePerSymbol;
 
     private void Awake()
     {
@@ -39,7 +47,7 @@ public class SlotManager : MonoBehaviour
     {
         if(waitingForReels)
         {
-            if (reels.All(r => !r.IsSpinning))
+            if (reels.All(r => !r.IsSpinning) && currentStatus != SlotStatus.Idle)
                 ChangeSlotStatus(SlotStatus.Idle);
         }
     }
@@ -55,7 +63,7 @@ public class SlotManager : MonoBehaviour
         reels = new();
         foreach (Vector2 pos in reelPositions)
         {
-            ReelController newReel = ReelFactory.Instance.GetReel(slotSetting.symbolsPerReel,false);
+            ReelController newReel = ReelFactory.Instance.GetReel(slotSetting.symbolsPerReel, randomizeSpritesOnReel);
             newReel.transform.SetParent(transform, false);
             newReel.transform.position = transform.TransformPoint(pos);
             reels.Add(newReel);
@@ -77,14 +85,21 @@ public class SlotManager : MonoBehaviour
 
     private IEnumerator ToggleReels(bool active)
     {
-        foreach (ReelController reel in reels)
+
+        for (int reelIndex = 0; reelIndex < reels.Count; reelIndex++)
         {
             if (active)
-                reel.Spin();
+            {
+                if (debugMode)
+                    reels[reelIndex].Spin(resultList[reelIndex]);
+                else
+                    reels[reelIndex].Spin();
+            }
             else
-                reel.Stop();
+                reels[reelIndex].Stop();
             yield return reelDelay;
         }
+
     }
 
     private void OnDrawGizmos()
@@ -113,4 +128,19 @@ public class SlotManager : MonoBehaviour
         }
     }
 
+    public ReelResult[,] GetResultMatrix()
+    {
+        ReelResult[,] results = new ReelResult[reels.Count, 3];
+        for (int reelIndex = 0; reelIndex < results.GetLength(0); reelIndex++)
+        {
+            for (int rowIndex = 0; rowIndex < results.GetLength(1); rowIndex++)
+            {
+                results[reelIndex, rowIndex] = reels[reelIndex].GetRowResult(rowIndex);
+            }
+        }
+        return results;
+    }
+
+    
+ 
 }
