@@ -150,6 +150,7 @@ public class ReelController : MonoBehaviour
         if (!shouldSpin)
             CorrectPositions();
 
+        yield return null;
         IsSpinning = false;
      }
 

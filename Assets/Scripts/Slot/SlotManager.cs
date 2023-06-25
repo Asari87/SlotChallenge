@@ -55,7 +55,7 @@ public class SlotManager : MonoBehaviour
 
     public bool IsSlotBusy()
     {
-        return reels.All(r => r.IsSpinning);
+        return reels.Any(r => r.IsSpinning);
     }
 
     private void ChangeSlotStatus(SlotStatus status)
