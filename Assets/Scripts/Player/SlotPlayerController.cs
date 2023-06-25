@@ -1,7 +1,13 @@
+using Game.Core;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using Unity.VisualScripting;
+
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SlotPlayerController : MonoBehaviour
 {
@@ -11,7 +17,13 @@ public class SlotPlayerController : MonoBehaviour
 
     private List<LineRenderer> winLines;
     private bool autoSpinMode = false;
-    public Action<int> OnWinSequenceFound;
+    public Action<int, int> OnWinSequenceFound;
+
+    [Header("UI")]
+    [SerializeField] private Button returnBtn;
+
+    [Header("Win lines")]
+    [SerializeField] private Material winLineMaterial;
     private void Awake()
     {
         winLines = new();
@@ -19,7 +31,9 @@ public class SlotPlayerController : MonoBehaviour
         spinButton = GetComponentInChildren<SlotSpinButton>();
         slotManager = GetComponentInChildren<SlotManager>();
 
+        returnBtn.onClick.AddListener(() => GameManager.Instance.SceneHandler.LoadScene(0));
     }
+    
     private void Start()
     {
 
@@ -30,7 +44,7 @@ public class SlotPlayerController : MonoBehaviour
     {
         slotManager.OnSlotStatusChanged -= HandleSlotStatusChange;
         spinButton.OnSpinPressed -= HandleSpinPress;
-
+        returnBtn.onClick.RemoveAllListeners();
     }
     private void HandleSlotStatusChange(SlotStatus status)
     {
@@ -61,6 +75,7 @@ public class SlotPlayerController : MonoBehaviour
             int sequenceCount = 1;
             int currentSymbol = 0;
 
+            #region Row Scan
             //Loop through all reels in the row
             for (int reel = 0; reel < results.GetLength(0); reel++)
             {
@@ -92,29 +107,37 @@ public class SlotPlayerController : MonoBehaviour
                     sequenceCount = 1;
                 }
             }
+            #endregion
             Debug.Log($"Results from row #{row} = {maxSquence} starting at {maxSequnceStartReel.spritePosition}");
             if(maxSquence >= 3)
             {
-                Vector3 startPosition = maxSequnceStartReel.spritePosition;
-                Vector3 endPosition = startPosition;
-                endPosition.x += 80 * (maxSquence - 1);
-                LineRenderer renderer = Utilities.CreateLineRenderer("Win", startPosition, endPosition, default, 5);
-                winLines.Add(renderer);
-                renderer.transform.SetParent(slotManager.transform, false);
-
-                playerData.AddToBalance(maxSquence * slotManager.GetPrizePerSymbol());
-                OnWinSequenceFound?.Invoke(maxSquence);
-
+                DrawWinLine(maxSequnceStartReel, maxSquence);
+                int prize = maxSquence * slotManager.GetPrizePerSymbol();
+                playerData.AddToBalance(prize);
+                OnWinSequenceFound?.Invoke(maxSquence, prize);
             }
-
-
-
         }
+    }
+
+    private void DrawWinLine(ReelResult maxSequnceStartReel, int maxSquence)
+    {
+        Vector3 startPosition = maxSequnceStartReel.spritePosition;
+        Vector3 endPosition = startPosition;
+        endPosition.x += 80 * (maxSquence - 1);
+        LineRenderer renderer = Utilities.CreateLineRenderer("WinLine", startPosition, endPosition, winLineMaterial, 5);
+        winLines.Add(renderer);
+        renderer.transform.SetParent(slotManager.transform, false);
+
     }
 
     private void TrySpinningSlot()
     {
         ClearPreviousLines();
+        if (slotManager.IsSlotBusy())
+        {
+            slotManager.StopReels();
+            return;
+        }
         if(playerData.GetCurrentBalance() >= slotManager.GetSpinCost())
         {
             playerData.TakeFromBalance(slotManager.GetSpinCost());
@@ -141,8 +164,8 @@ public class SlotPlayerController : MonoBehaviour
 
         if (autoSpinMode)
             spinButton.HandleSlotState(SlotStatus.Auto);
-        else
-            TrySpinningSlot();
+
+        TrySpinningSlot();
     }
 
 

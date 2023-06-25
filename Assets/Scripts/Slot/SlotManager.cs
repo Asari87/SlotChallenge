@@ -27,6 +27,7 @@ public class SlotManager : MonoBehaviour
     private SlotStatus currentStatus;
     public Action<SlotStatus> OnSlotStatusChanged;
     private bool waitingForReels = false;
+
     public int GetSpinCost() => slotSetting.spinCost;
     public int GetPrizePerSymbol() => slotSetting.PrizePerSymbol;
 
@@ -47,9 +48,14 @@ public class SlotManager : MonoBehaviour
     {
         if(waitingForReels)
         {
-            if (reels.All(r => !r.IsSpinning) && currentStatus != SlotStatus.Idle)
+            if (!IsSlotBusy() && currentStatus != SlotStatus.Idle)
                 ChangeSlotStatus(SlotStatus.Idle);
         }
+    }
+
+    public bool IsSlotBusy()
+    {
+        return reels.All(r => r.IsSpinning);
     }
 
     private void ChangeSlotStatus(SlotStatus status)
